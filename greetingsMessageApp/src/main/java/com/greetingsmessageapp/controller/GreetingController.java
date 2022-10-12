@@ -59,9 +59,9 @@ public class GreetingController {
     (Find by ID) is an Inbuilt Method for finding particular data with id.
      */
 
-    @GetMapping(value ={"/getByID/{id}"})
-    public Optional<Model> getUserByID(@PathVariable int id){
-        return repo.findById(id);
+    @GetMapping(value ={"/getByID/{idn}"})
+    public Optional<Model> getUserByID(@PathVariable int idn){
+        return repo.findById(idn);
     }
 
     //UC-6
@@ -72,5 +72,12 @@ public class GreetingController {
         return repo.findAll();
     }
 
+    //UC-8
+    //Delete Method
+
+    @DeleteMapping(value = {"/delete"})
+    public void deleteByID(@PathVariable int idno){
+        repo.deleteById(idno);
+    }
 
 }
