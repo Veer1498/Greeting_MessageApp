@@ -2,32 +2,28 @@ package com.greetingsmessageapp.entity;
 
 public class Model {
     private long id;
-    private String content;
+    private String firstName;
+    private String lastName;
 
-
-//	 parameterized constructor
-
-    public Model(long id, String message) {
+    public Model(long id, String firstName, String lastName) {
         this.id = id;
-        this.content = message;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
-
-//	 generates setters and getters
-
-    public long getId() {
-        return id;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getContent() {
-        return content;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 }
