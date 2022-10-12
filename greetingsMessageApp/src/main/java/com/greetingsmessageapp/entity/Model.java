@@ -1,6 +1,11 @@
 package com.greetingsmessageapp.entity;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Model {
+    @Id
     private long id;
     private String firstName;
     private String lastName;
@@ -10,6 +15,11 @@ public class Model {
         this.firstName = firstName;
         this.lastName = lastName;
     }
+
+    public Model() {
+
+    }
+
 
     public String getFirstName() {
         return firstName;
@@ -25,5 +35,14 @@ public class Model {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    @Override
+    public String toString() {
+        return "Model{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                '}';
     }
 }
