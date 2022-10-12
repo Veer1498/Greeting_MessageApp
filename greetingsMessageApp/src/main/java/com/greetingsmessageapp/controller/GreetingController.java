@@ -18,8 +18,8 @@ public class GreetingController {
         return new Model(counter.incrementAndGet(), String.format(template, name));
     }
 
-//    @GetMapping("/{name}")
-//    public Model greetings(@PathVariable String name) {
-//        return new Model(counter.incrementAndGet(), String.format(template, name));
-//    }
+    @GetMapping("/{name}")
+    public Model greetings(@PathVariable String name) {
+        return new Model(counter.incrementAndGet(), String.format(template, name));
+    }
 }
