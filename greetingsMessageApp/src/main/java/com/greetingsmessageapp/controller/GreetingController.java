@@ -5,6 +5,7 @@ import com.greetingsmessageapp.entity.Model;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
@@ -16,13 +17,14 @@ public class GreetingController {
     private static final String template = "Hello ";
     private final AtomicLong counter = new AtomicLong();
 
+    //UC-1
     @GetMapping("/hello")
     public String greetings(){
         return "Hello World";
     }
 
 
-
+    //UC -2
     @GetMapping("/{name}")
     public String greetings(@PathVariable String name) {
         return template + name;
@@ -50,5 +52,16 @@ public class GreetingController {
        Model model = new Model(counter.incrementAndGet(), greeting.getFirstName(),greeting.getLastName());
         return repo.save(model);
     }
+
+    //UC-5
+    /*
+    (Find by ID) is an Inbuilt Method for finding particular data with id.
+     */
+
+    @GetMapping("/getByID/{id}")
+    public Optional<Model> getUserByID(@PathVariable int id){
+        return repo.findById(id);
+    }
+
 
 }
