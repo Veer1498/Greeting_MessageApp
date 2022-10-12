@@ -11,7 +11,10 @@ public class GreetingController {
     private static final String template = "Hello, %s!";
     private final AtomicLong counter = new AtomicLong();
 
-
+    @GetMapping("/hello")
+    public String greetings(){
+        return "Hello World";
+    }
 
     @GetMapping(value = { "", "/", "/home" })
     public Model greeting(@RequestParam(value = "name", defaultValue = "World") String name) {
