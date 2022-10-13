@@ -82,7 +82,7 @@ public class GreetingController {
     }
     //UC-7 Update DAta
     @PutMapping("/update/{id}")
-    public Model updateUser(@RequestBody Model model, @PathVariable int id){
+    public String updateUser(@RequestBody Model model, @PathVariable int id){
         Optional<Model> user= repo.findById(id);
         if(user.isPresent()) {
             user.get().setFirstName(model.getFirstName());
@@ -90,7 +90,7 @@ public class GreetingController {
             repo.save(user.get());
         }
 
-        return model;
+        return template+" "+model.getFirstName()+" "+model.getLastName()+" , Welcome to my Program";
     }
 
 }
