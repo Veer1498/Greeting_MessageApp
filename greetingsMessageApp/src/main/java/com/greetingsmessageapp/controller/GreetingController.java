@@ -1,7 +1,12 @@
 package com.greetingsmessageapp.controller;
 
-import com.greetingsmessageapp.Repo.GreetingRepo;
-import com.greetingsmessageapp.entity.Model;
+import com.greetingsmessageapp.Repo.UserRepo;
+import com.greetingsmessageapp.dto.UserDto;
+import com.greetingsmessageapp.entity.Greeting;
+import com.greetingsmessageapp.entity.User;
+
+import com.greetingsmessageapp.service.GreetService;
+import com.greetingsmessageapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,88 +14,121 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ * Puprose : To Create Greeting Message App and Perform CURL Operations on it
+ * Author : Veer.Singa
+ */
 @RestController
 @RequestMapping("/greeting")
 public class GreetingController {
+    /**
+     * 1.Auto Wired all the required Classes to use the instance Objects globally.
+     * 2.Created the Variables template and counter to use globally.
+     */
     @Autowired
-    public GreetingRepo repo;
+    private UserRepo userRepo;
 
-    private static final String template = "Hello ";
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private GreetService greetService;
+    private static final String template = "Hello, %s";
     private final AtomicLong counter = new AtomicLong();
 
-    //UC-1
-    @GetMapping("/hello")
-    public String greetings(){
-        return "Hello World";
+    /**
+     * 1. In This Method,
+     *
+     * @param name
+     * @return - greeting Object.
+     * @GetMapping = Annotation for mapping HTTP GET requests onto specific handler methods.
+     * @RequestParam =  It is used to bind a web request parameter to a method parameter.
+     * 2. If there is no value entered eg: " ", it takes default value if provided.
+     * 3. return value will be Greeting Object with provided paramaters.
+     */
+    @GetMapping("/")
+    public Greeting greeting(@RequestParam(value = "name", defaultValue = "World") String name) {
+
+        return new Greeting(counter.incrementAndGet(), String.format(template, name));
     }
 
+    /**
+     * 1. In this Method,
+     *
+     * @RequestBody = allows us to retrieve the request's body.
+     * 2. Then the body will be assumed as Passing userDto Object.
+     * 3.While Returning, I am dividing variables of object and passing as string.
+     */
+    @GetMapping("/fullNameObject")
+    public String greetFull(@RequestBody UserDto userDto) {
 
-    //UC -2
-    @GetMapping("/{name}")
-    public String greetings(@PathVariable String name) {
-        return template + name;
+        return "Hello " + userDto.firstname + " " + userDto.lastname + ", welcome to my pgm";
     }
 
+    /**
+     * 1.In this Method, WE are Saving the Data into our Data Base.
+     *
+     * @PostMapping = Annotation for mapping HTTP POST requests onto specific handler methods.
+     * 2. Then the body will be assumed as Passing userDto Object.
+     * 3.Calling a Methods from Service Layer and passing the object into it.
+     * 4. Here, I am Returning Saved Greet Message in dataBase to confirm.
+     */
+    @PostMapping("/add")
+    public Greeting addUser(@RequestBody UserDto userdto) {
 
-    //UC-3
-    @PostMapping(value = { "fullName" })
-    public String greeting(@RequestParam(value = "firstName") String firstName,@RequestParam(value = "lastName") String lastName) {
-        if (firstName =="" && lastName == ""){
-            return "Hello Bridgelabz";
-        }
-        else if (firstName !="" && lastName == "") {
-            return template +" "+ firstName+ ", Welcome to My Program";
-        }
-        else if (firstName =="" && lastName != "") {
-            return template +" "+ lastName+ ", Welcome to My Program";
-        }
-        return template +" "+ firstName +" "+ lastName+", Welcome to My Program";
+        userService.addUser(userdto);
+        return greetService.addGreet(userdto);
     }
 
-    //UC-4
-    @PostMapping(value = { "saving" })
-    public Model addUser(@RequestBody Model greeting) {
-       Model model = new Model((int) counter.incrementAndGet(), greeting.getFirstName(),greeting.getLastName());
-        return repo.save(model);
+    /**
+     * 1. This Method used for Retrieving all the Stored Data in our DataBase.
+     * 2. The Return is List type, because The Returning value is list of Objects.
+     * 3. Calling The inbuilt Method of Repository Created eg: findAll here..
+     * 4. And returning it to visualize the data.
+     */
+    @GetMapping("/getall")
+    public List<User> getUser() {
+
+        return userRepo.findAll();
     }
 
-    //UC-5
-    /*
-    (Find by ID) is an Inbuilt Method for finding particular data with id.
+    /**
+     * 1. This Method used for Retrieving single Stored Data in our DataBase.
+     * 2. The Return is Optional type, because The Returning value maybe Object or Null.
+     * 3. Passing Path Variable as id to check for the id.
+     * 3. Calling The inbuilt Method of Repository Created eg: findById here..
+     * 4. And returning it to visualize the data.
+     */
+    @GetMapping("/getUserById/{id}")
+    public Optional<User> getUserById(@PathVariable int id) {
+
+        return userRepo.findById(id);
+    }
+
+    /**
+     * 1. This Method used for Deleting single data in our DB.
+     * 2. NO Return, just removes the object with passed ID.
+     * 3. Calling The inbuilt Method of Repository Created eg: deleteById here..
+     * 4. passing the id value into inbult function to delete.
      */
 
-    @GetMapping(value ={"/getByID/{id}"})
-    public Optional<Model> getUserByID(@PathVariable int id){
+    @DeleteMapping("/deleteById/{id}")
+    public void deleteById(@PathVariable int id) {
 
-        return repo.findById(id);
+        userRepo.deleteById(id);
     }
 
-    //UC-6
-    //List All
+    /**
+     * 1. This Method used for Updating Data by id.
+     * 2. Passing the new Body to update the already Crated Body.
+     * 2. The Return User type, because The Returning value is User type of Object.
+     * 3. Calling The created Method of Service Layer Created.
+     * 4. And returning it to visualize the data.
+     */
+    @PutMapping("/update")
+    public User updateUser(@RequestBody UserDto userdto, @RequestParam int id) {
 
-    @GetMapping(value ={"/listAll"})
-    public List<Model> getAll(){
-        return repo.findAll();
+        User user = userService.updateUser(userdto, id);
+        return user;
     }
-
-    //UC-8
-    //Delete Method
-
-    @DeleteMapping(value = {"/delete/{id}"})
-    public void deleteByID(@PathVariable int id){
-        repo.deleteById(id);
-    }
-    //UC-7 Update DAta
-    @PutMapping("/update/{id}")
-    public Model updateUser(@RequestBody Model model, @PathVariable int id){
-        Optional<Model> user= repo.findById(id);
-        if(user.isPresent()) {
-            user.get().setFirstName(model.getFirstName());
-            user.get().setLastName(model.getLastName());
-            repo.save(user.get());
-        }
-
-        return model;
-    }
-
 }
