@@ -1,16 +1,19 @@
 package com.greetingsmessageapp.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
 public class Model {
     @Id
-    private long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
     private String firstName;
     private String lastName;
 
-    public Model(long id, String firstName, String lastName) {
+    public Model(int id, String firstName, String lastName) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -18,6 +21,11 @@ public class Model {
 
     public Model() {
 
+    }
+
+    public Model(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
 

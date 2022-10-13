@@ -50,7 +50,7 @@ public class GreetingController {
     //UC-4
     @PostMapping(value = { "saving" })
     public Model addUser(@RequestBody Model greeting) {
-       Model model = new Model(counter.incrementAndGet(), greeting.getFirstName(),greeting.getLastName());
+       Model model = new Model((int) counter.incrementAndGet(), greeting.getFirstName(),greeting.getLastName());
         return repo.save(model);
     }
 
@@ -59,9 +59,10 @@ public class GreetingController {
     (Find by ID) is an Inbuilt Method for finding particular data with id.
      */
 
-    @GetMapping(value ={"/getByID/{idn}"})
-    public Optional<Model> getUserByID(@PathVariable int idn){
-        return repo.findById(idn);
+    @GetMapping(value ={"/getByID/{id}"})
+    public Optional<Model> getUserByID(@PathVariable int id){
+
+        return repo.findById(id);
     }
 
     //UC-6
@@ -75,9 +76,21 @@ public class GreetingController {
     //UC-8
     //Delete Method
 
-    @DeleteMapping(value = {"/delete"})
-    public void deleteByID(@PathVariable int idno){
-        repo.deleteById(idno);
+    @DeleteMapping(value = {"/delete/{id}"})
+    public void deleteByID(@PathVariable int id){
+        repo.deleteById(id);
+    }
+    //UC-7 Update DAta
+    @PutMapping("/update/{id}")
+    public Model updateUser(@RequestBody Model model, @PathVariable int id){
+        Optional<Model> user= repo.findById(id);
+        if(user.isPresent()) {
+            user.get().setFirstName(model.getFirstName());
+            user.get().setLastName(model.getLastName());
+            repo.save(user.get());
+        }
+
+        return model;
     }
 
 }
