@@ -1,33 +1,56 @@
 package com.greetingsmessageapp.entity;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class Model {
-    private long id;
-    private String content;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
+    private String firstName;
+    private String lastName;
 
-
-//	 parameterized constructor
-
-    public Model(long id, String message) {
+    public Model(int id, String firstName, String lastName) {
         this.id = id;
-        this.content = message;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public Model() {
+
+    }
+
+    public Model(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
 
-//	 generates setters and getters
-
-    public long getId() {
-        return id;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getContent() {
-        return content;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    @Override
+    public String toString() {
+        return "Model{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                '}';
     }
 }
